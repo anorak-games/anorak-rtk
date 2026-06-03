@@ -65,14 +65,15 @@ jobs:
             exit 1
           fi
 
-      - name: Assert no http(s) URLs baked into binary strings (unix)
-        if: runner.os != 'Windows'
+      - name: Assert no network capabilities in dependency tree
         run: |
-          BIN="target/${{ matrix.target }}/release/anorak-rtk"
-          # Allowlist: github repo URL is fine in clap version strings, but
-          # actual API/telemetry endpoints would surface as their own URLs.
-          if strings "$BIN" | grep -E "^https?://" | grep -vE "github\.com/anorak-games/anorak-rtk"; then
-            echo "::error::Disallowed http(s):// URL found in compiled binary."
+          # The source-grep above (HTTP-client crates) is the primary defense;
+          # also check the resolved dep tree to catch any transitive HTTP
+          # client that might creep in via a deps change.
+          if cargo tree -e normal --target=${{ matrix.target }} \
+              | grep -iE "(^|[^A-Za-z0-9_-])(reqwest|ureq|surf|hyper|hyper_rustls|isahc|attohttpc)\b" \
+              | grep -v "^anorak-rtk"; then
+            echo "::error::Network-capable crate found in dependency tree."
             exit 1
           fi
 
