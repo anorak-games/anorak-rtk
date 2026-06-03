@@ -1,12 +1,12 @@
 [package]
-name = "rtk"
-version = "0.40.0"
+name = "anorak-rtk"
+version = "0.42.0-anorak.1"
 edition = "2021"
-authors = ["Patrick Szymkowiak"]
-description = "Rust Token Killer - High-performance CLI proxy to minimize LLM token consumption"
-license = "Apache 2.0"
-homepage = "https://www.rtk-ai.app"
-repository = "https://github.com/rtk-ai/rtk"
+authors = ["Patrick Szymkowiak", "Yui-Qi-Tang", "Anorak <dev@anorak.games>"]
+description = "Anorak's hardened fork of rtk-ai/rtk — network egress disabled, #640 patched"
+license = "Apache-2.0"
+homepage = "https://github.com/anorak-games/anorak-rtk"
+repository = "https://github.com/anorak-games/anorak-rtk"
 readme = "README.md"
 keywords = ["cli", "llm", "token", "filter", "productivity"]
 categories = ["command-line-utilities", "development-tools"]
@@ -27,7 +27,8 @@ toml = "0.8"
 chrono = "0.4"
 tempfile = "3"
 sha2 = "0.10"
-ureq = "2"
+# ureq removed — anorak-rtk has no network egress (telemetry network call site
+# is excised in src/core/telemetry.rs and src/core/telemetry_cmd.rs).
 getrandom = "0.4"
 flate2 = "1.0"
 quick-xml = "0.37"
@@ -58,12 +59,12 @@ extended-description = "rtk filters and compresses command outputs before they r
 section = "utility"
 priority = "optional"
 assets = [
-    ["target/release/rtk", "usr/bin/", "755"],
+    ["target/release/anorak-rtk", "usr/bin/", "755"],
 ]
 # cargo-generate-rpm configuration
 [package.metadata.generate-rpm]
 assets = [
-    { source = "target/release/rtk", dest = "/usr/bin/rtk", mode = "755" },
+    { source = "target/release/anorak-rtk", dest = "/usr/bin/anorak-rtk", mode = "755" },
 ]
 
 [lints.rust]

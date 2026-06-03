@@ -53,10 +53,10 @@ pub enum AgentTarget {
 
 #[derive(Parser)]
 #[command(
-    name = "rtk",
+    name = "anorak-rtk",
     version,
-    about = "Rust Token Killer - Minimize LLM token consumption",
-    long_about = "A high-performance CLI proxy designed to filter and summarize system outputs before they reach your LLM context."
+    about = "Anorak's hardened fork of rtk-ai/rtk — network egress disabled, #640 patched",
+    long_about = "A high-performance CLI proxy designed to filter and summarize system outputs before they reach your LLM context. Anorak fork — telemetry network egress is removed at build time."
 )]
 struct Cli {
     #[command(subcommand)]

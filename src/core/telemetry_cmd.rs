@@ -140,44 +140,11 @@ fn run_forget() -> Result<()> {
         }
     }
 
-    // Send server-side erasure request
-    if let Some(hash) = device_hash {
-        match send_erasure_request(&hash) {
-            Ok(()) => {
-                println!("Erasure request sent to server.");
-            }
-            Err(e) => {
-                eprintln!("rtk: could not reach server: {}", e);
-                eprintln!("  To complete erasure, email contact@rtk-ai.app");
-                eprintln!("  with your device hash: {}", hash);
-            }
-        }
-    }
+    // anorak-rtk: no server-side erasure needed — telemetry network egress
+    // is removed at build time, so no payload was ever transmitted.
+    let _ = device_hash;
 
-    println!("Local telemetry data deleted. Telemetry disabled.");
+    println!("Local telemetry data deleted. Telemetry network egress is disabled in anorak-rtk.");
     Ok(())
 }
 
-fn send_erasure_request(device_hash: &str) -> Result<()> {
-    let url = option_env!("RTK_TELEMETRY_URL");
-    let url = match url {
-        Some(u) => format!("{}/erasure", u),
-        None => anyhow::bail!("no telemetry endpoint configured"),
-    };
-
-    let payload = serde_json::json!({
-        "device_hash": device_hash,
-        "action": "erasure",
-    });
-
-    let mut req = ureq::post(&url).set("Content-Type", "application/json");
-
-    if let Some(token) = option_env!("RTK_TELEMETRY_TOKEN") {
-        req = req.set("X-RTK-Token", token);
-    }
-
-    req.timeout(std::time::Duration::from_secs(5))
-        .send_string(&payload.to_string())?;
-
-    Ok(())
-}

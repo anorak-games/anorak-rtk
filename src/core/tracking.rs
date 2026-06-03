@@ -225,6 +225,11 @@ pub struct MonthStats {
 /// Type alias for command statistics tuple: (command, count, saved_tokens, avg_savings_pct, avg_time_ms)
 type CommandStats = (String, usize, usize, f64, u64);
 
+// anorak-rtk: several stats methods below fed the upstream telemetry payload
+// (`send_ping` in core/telemetry.rs), which has been excised. They are kept
+// intact to minimise diff from upstream and to remain available for any
+// future local-only `rtk telemetry status` reporting.
+#[allow(dead_code)]
 impl Tracker {
     /// Create a new tracker instance.
     ///
@@ -1225,6 +1230,7 @@ impl Tracker {
 }
 
 /// Map an rtk_cmd to an ecosystem category for telemetry.
+#[allow(dead_code)]
 fn categorize_command(rtk_cmd: &str) -> String {
     let parts: Vec<&str> = rtk_cmd.split_whitespace().collect();
     let tool = parts.get(1).copied().unwrap_or("other");
